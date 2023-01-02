@@ -7,11 +7,11 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { stripe } from "../../lib/stripe";
 import Stripe from "stripe";
 import Image from "next/image";
-// import axios from "axios";
-import { useState, useContext } from "react";
 import Head from "next/head";
 
 import { CartContext } from "../../context/CartContext";
+
+import { useContextSelector } from "use-context-selector";
 
 interface ProductProps {
   product: {
@@ -21,32 +21,15 @@ interface ProductProps {
     price: string;
     description: string;
     defaultPriceId: string;
+    priceWithoutFormatting: number;
   };
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSession /* setIsCreatingCheckoutSession */] =
-    useState<boolean>(false);
-
-  const { addProductOnCart } = useContext(CartContext);
-
-  // async function handleBuyProduct() {
-  //   try {
-  //     setIsCreatingCheckoutSession(true);
-
-  //     const response = await axios.post("/api/checkout", {
-  //       priceId: product.defaultPriceId,
-  //     });
-
-  //     const { checkoutUrl } = response.data;
-
-  //     window.location.href = checkoutUrl;
-  //   } catch (err) {
-  //     setIsCreatingCheckoutSession(false);
-
-  //     alert("Falha ao redirecionar ao checkout");
-  //   }
-  // }
+  const addProductOnCart = useContextSelector(
+    CartContext,
+    (cart) => cart.addProductOnCart
+  );
 
   return (
     <>
@@ -68,10 +51,7 @@ export default function Product({ product }: ProductProps) {
           <span>{product.price}</span>
 
           <p>{product.description}</p>
-          <button
-            disabled={isCreatingCheckoutSession}
-            onClick={() => addProductOnCart(product)}
-          >
+          <button onClick={() => addProductOnCart(product)}>
             Colocar na sacola
           </button>
         </ProductDetails>
@@ -108,6 +88,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
           currency: "BRL",
           style: "currency",
         }).format(price.unit_amount / 100),
+        priceWithoutFormatting: price.unit_amount,
         description: product.description,
         defaultPriceId: price.id,
       },
