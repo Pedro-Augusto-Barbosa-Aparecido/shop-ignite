@@ -1,10 +1,13 @@
-import { createContext } from "use-context-selector";
+import React, { createContext, useState } from "react";
 import { Container } from "../styles/pages/app";
-import React, { useCallback, useState } from "react";
 
 interface Product {
   id: string;
-  priceId: string;
+  name: string;
+  imageUrl: string;
+  price: string;
+  description: string;
+  defaultPriceId: string;
 }
 
 type CartContextType = {
@@ -22,28 +25,43 @@ type CartProviderProps = {
 
 export function CartProvider({ children }: CartProviderProps) {
   const [productsOnCart, setProductsOnCart] = useState<Product[]>([]);
-
   const quantityOfProductOnCard = productsOnCart.length;
 
-  const addProductOnCart = useCallback(({ priceId, id }: Product) => {
-    setProductsOnCart((products) => [...products, { priceId, id }]);
-  }, []);
+  const addProductOnCart = ({
+    price,
+    id,
+    defaultPriceId,
+    description,
+    imageUrl,
+    name,
+  }: Product) => {
+    const isProductAlreadyExistOnCart = productsOnCart.some(
+      (product) => product.id === id
+    );
 
-  const removeProductOfCart = useCallback(
-    ({ id }: Pick<Product, "id">) => {
-      const doesProductOnCart = productsOnCart.find(
-        (product) => product.id === id
-      );
+    if (isProductAlreadyExistOnCart) {
+      alert("Product already on cart!!");
+      return;
+    }
 
-      if (!doesProductOnCart) {
-        alert("This product isn't on cart!");
-        return;
-      }
+    setProductsOnCart((products) => [
+      ...products,
+      { price, id, defaultPriceId, description, imageUrl, name },
+    ]);
+  };
 
-      setProductsOnCart(productsOnCart.filter((product) => product.id !== id));
-    },
-    [productsOnCart]
-  );
+  const removeProductOfCart = ({ id }: Pick<Product, "id">) => {
+    const doesProductOnCart = productsOnCart.find(
+      (product) => product.id === id
+    );
+
+    if (!doesProductOnCart) {
+      alert("This product isn't on cart!");
+      return;
+    }
+
+    setProductsOnCart(productsOnCart.filter((product) => product.id !== id));
+  };
 
   return (
     <CartContext.Provider

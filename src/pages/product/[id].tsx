@@ -7,9 +7,11 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { stripe } from "../../lib/stripe";
 import Stripe from "stripe";
 import Image from "next/image";
-import axios from "axios";
-import { useState } from "react";
+// import axios from "axios";
+import { useState, useContext } from "react";
 import Head from "next/head";
+
+import { CartContext } from "../../context/CartContext";
 
 interface ProductProps {
   product: {
@@ -23,26 +25,28 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
+  const [isCreatingCheckoutSession /* setIsCreatingCheckoutSession */] =
     useState<boolean>(false);
 
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckoutSession(true);
+  const { addProductOnCart } = useContext(CartContext);
 
-      const response = await axios.post("/api/checkout", {
-        priceId: product.defaultPriceId,
-      });
+  // async function handleBuyProduct() {
+  //   try {
+  //     setIsCreatingCheckoutSession(true);
 
-      const { checkoutUrl } = response.data;
+  //     const response = await axios.post("/api/checkout", {
+  //       priceId: product.defaultPriceId,
+  //     });
 
-      window.location.href = checkoutUrl;
-    } catch (err) {
-      setIsCreatingCheckoutSession(false);
+  //     const { checkoutUrl } = response.data;
 
-      alert("Falha ao redirecionar ao checkout");
-    }
-  }
+  //     window.location.href = checkoutUrl;
+  //   } catch (err) {
+  //     setIsCreatingCheckoutSession(false);
+
+  //     alert("Falha ao redirecionar ao checkout");
+  //   }
+  // }
 
   return (
     <>
@@ -51,7 +55,13 @@ export default function Product({ product }: ProductProps) {
       </Head>
       <ProductContainer>
         <ImageContainer>
-          <Image src={product.imageUrl} alt="" width={520} height={480} />
+          <Image
+            src={product.imageUrl}
+            alt=""
+            width={520}
+            height={480}
+            priority
+          />
         </ImageContainer>
         <ProductDetails>
           <h1>{product.name}</h1>
@@ -60,9 +70,9 @@ export default function Product({ product }: ProductProps) {
           <p>{product.description}</p>
           <button
             disabled={isCreatingCheckoutSession}
-            onClick={handleBuyProduct}
+            onClick={() => addProductOnCart(product)}
           >
-            Comprar Agora
+            Colocar na sacola
           </button>
         </ProductDetails>
       </ProductContainer>

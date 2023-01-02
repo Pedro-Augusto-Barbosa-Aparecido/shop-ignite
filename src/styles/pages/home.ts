@@ -96,7 +96,7 @@ export const Product = styled("div", {
     },
   },
 
-  "&:active": {
+  "&:dragging": {
     cursor: "grabbing",
   },
 });

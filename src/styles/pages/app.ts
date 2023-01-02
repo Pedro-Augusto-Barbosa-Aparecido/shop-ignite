@@ -21,7 +21,16 @@ export const Header = styled("header", {
 });
 
 export const CartMenuTrigger = styled("span", {
-  color: "$gray400",
+  variants: {
+    color: {
+      true: {
+        color: "$gray300",
+      },
+      false: {
+        color: "$gray400",
+      },
+    },
+  },
 
   backgroundColor: "$gray800",
   padding: "0.75rem",
