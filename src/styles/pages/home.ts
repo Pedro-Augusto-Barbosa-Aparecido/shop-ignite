@@ -4,7 +4,7 @@ export const HomeContainer = styled("main", {
   display: "flex",
   // gap: "3rem",
   width: "100%",
-  maxWidth: "calc(100vw - ((100vw - 1180px) / 2))",
+  maxWidth: "calc(100vw - ((100vw - 1100px) / 2))",
   marginLeft: "auto",
   minHeight: 656,
 });
@@ -44,14 +44,48 @@ export const Product = styled("div", {
     opacity: 0,
     transition: "all 0.2s ease-in-out",
 
-    strong: {
-      fontSize: "$lg",
+    button: {
+      color: "$white",
+
+      backgroundColor: "$green500",
+
+      padding: "0.75rem",
+
+      borderRadius: 6,
+      border: 0,
+
+      display: "flex",
+
+      justifyContent: "center",
+      alignItems: "center",
+
+      "&:hover": {
+        backgroundColor: "$green300",
+        cursor: "pointer",
+      },
     },
 
-    span: {
-      fontSize: "$xl",
-      fontWeight: "bold",
-      color: "$green300",
+    div: {
+      display: "flex",
+      flexDirection: "column",
+
+      justifyContent: "flex-start",
+      alignItems: "flex-start",
+
+      gap: "0.25rem",
+
+      strong: {
+        fontSize: "$lg",
+        fontFamily: "Roboto",
+        lineHeight: 1.6,
+        color: "$gray100",
+      },
+
+      span: {
+        fontSize: "$xl",
+        fontWeight: "bold",
+        color: "$green300",
+      },
     },
   },
 
@@ -60,5 +94,9 @@ export const Product = styled("div", {
       transform: "translateY(0%)",
       opacity: 1,
     },
+  },
+
+  "&:active": {
+    cursor: "grabbing",
   },
 });
